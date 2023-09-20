@@ -1,0 +1,129 @@
+<mujoco model="aubo_i5">
+  <compiler angle="radian" meshdir="meshes" autolimits="true" />
+
+  <option integrator="implicitfast"/>
+
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0" density="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh" density="2700"/>
+    </default>
+  </default>
+  
+  <asset>
+    <material name="Opaque(63,63,63)" specular="0.5" shininess="0.5" rgba="0.250980 0.250980 0.250980 1.0"/>
+    <material name="Opaque(229,234,237)" specular="0.5" shininess="0.5" rgba="0.898039 0.917647 0.929412 1.0"/>
+    <material name="Opaque(232,133,0)" specular="0.5" shininess="0.5" rgba="0.909804 0.521569 0.000000 1.0"/>
+    <material name="Opaque(202,209,238)" specular="0.5" shininess="0.5" rgba="0.792157 0.819608 0.933333 1.0"/>
+    <material name="Opaque(255,255,255)" specular="0.5" shininess="0.5" rgba="1.000000 1.000000 1.000000 1.0"/>
+
+    <mesh file="visual/base_link_0.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/base_link_1.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/shoulder_link_0.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/shoulder_link_1.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/upper_arm_link_0.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/upper_arm_link_1.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/forearm_link_0.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/forearm_link_1.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/wrist_1_link_0.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/wrist_1_link_1.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/wrist_2_link_0.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/wrist_2_link_1.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/wrist_3_link_0.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/wrist_3_link_1.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/wrist_3_link_2.obj" scale="0.001 0.001 0.001"/>
+    <mesh file="visual/wrist_3_link_3.obj" scale="0.001 0.001 0.001"/>
+
+    <mesh file="collision/base_link_collision.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/shoulder_link_collision.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/upper_arm_link_collision_0.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/upper_arm_link_collision_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/upper_arm_link_collision_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/forearm_link_collision_0.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/forearm_link_collision_1.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/forearm_link_collision_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/wrist_1_link_collision.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/wrist_2_link_collision.stl" scale="0.001 0.001 0.001"/>
+    <mesh file="collision/wrist_3_link_collision.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+  <worldbody>
+    <body name="base_link">
+      <inertial pos="5.28033e-09 0.00159669 0.0165705" quat="0.495398 0.50456 -0.50456 0.495398" mass="1.43822" diaginertia="0.0055319 0.003103 0.0028571"/>
+      <geom mesh="base_link_0" material="Opaque(229,234,237)" class="visual"/>
+      <geom mesh="base_link_1" material="Opaque(63,63,63)" class="visual"/>
+      <geom mesh="base_link_collision" class="collision"/>
+
+      <body name="shoulder_link" pos="0 0 0.0435">
+        <inertial pos="-4.18504e-07 -0.00538388 0.0698852" quat="0.997139 0.0755851 0 0" mass="3.99774" diaginertia="0.010612 0.0103292 0.00776575"/>
+        <joint name="shoulder_pan_joint" pos="0 0 0" axis="0 0 1" range="-3.04 3.04"/>
+        <geom mesh="shoulder_link_0" pos="0 0 -0.0435" material="Opaque(63,63,63)" class="visual"/>
+        <geom mesh="shoulder_link_1" pos="0 0 -0.0435" material="Opaque(232,133,0)" class="visual"/>
+        <geom mesh="shoulder_link_collision" pos="0 0 -0.0435" class="collision"/>
+
+        <body name="upper_arm_link" pos="0 -0.062 0.0785">
+          <inertial pos="4.51558e-10 -0.0717894 0.204" quat="1 0 -1.45662e-06 0" mass="10.2644" diaginertia="0.367413 0.361705 0.024156"/>
+          <joint name="shoulder_lift_joint" pos="0 0 0" axis="0 -1 0" range="-3.04 3.04"/>
+          <geom mesh="upper_arm_link_0" pos="0 0.062 -0.122" material="Opaque(63,63,63)" class="visual"/>
+          <geom mesh="upper_arm_link_1" pos="0 0.062 -0.122" material="Opaque(232,133,0)" class="visual"/>
+          <geom mesh="upper_arm_link_collision_0" pos="0 0.062 -0.122" class="collision"/>
+          <geom mesh="upper_arm_link_collision_1" pos="0 0.062 -0.122" class="collision"/>
+          <geom mesh="upper_arm_link_collision_2" pos="0 0.062 -0.122" class="collision"/>
+
+          <body name="forearm_link" pos="0 0 0.408">
+            <inertial pos="-8.5989e-08 0.0377796 0.186257" quat="0.999989 -0.00464387 0 0" mass="5.71706" diaginertia="0.110129 0.109714 0.00516198"/>
+            <joint name="elbow_joint" pos="0 0 0" axis="0 1 0" range="-3.04 3.04"/>
+            <geom mesh="forearm_link_0" pos="0 0.062 -0.53" material="Opaque(63,63,63)" class="visual"/>
+            <geom mesh="forearm_link_1" pos="0 0.062 -0.53" material="Opaque(232,133,0)" class="visual"/>
+            <geom mesh="forearm_link_collision_0" pos="0 0.062 -0.53" class="collision"/>
+            <geom mesh="forearm_link_collision_1" pos="0 0.062 -0.53" class="collision"/>
+            <geom mesh="forearm_link_collision_2" pos="0 0.062 -0.53" class="collision"/>
+
+
+            <body name="wrist_1_link" pos="0 -0.0175 0.376">
+              <inertial pos="4.04369e-07 -0.0378176 0.010378" quat="0.996128 0.0879183 0 0" mass="1.19598" diaginertia="0.001481 0.00143005 0.000971945"/>
+              <joint name="wrist_1_joint" pos="0 0 0" axis="0 -1 0" range="-3.04 3.04"/>              
+              <geom mesh="wrist_1_link_0" pos="0 0.0795 -0.906" material="Opaque(63,63,63)" class="visual"/>
+              <geom mesh="wrist_1_link_1" pos="0 0.0795 -0.906" material="Opaque(232,133,0)" class="visual"/>
+              <geom mesh="wrist_1_link_collision" pos="0 0.0795 -0.906" class="collision"/>
+
+
+              <body name="wrist_2_link" pos="0 -0.042 0.06056">
+                <inertial pos="-3.83591e-07 -0.0103783 0.0378173" quat="0.766536 0.642201 0 0" mass="1.19598" diaginertia="0.001481 0.00143005 0.000971945"/>
+                <joint name="wrist_2_joint" pos="0 0 0" axis="0 0 1" range="-3.04 3.04"/>
+                <geom mesh="wrist_2_link_0" pos="0 0.1215 -0.96656" material="Opaque(63,63,63)" class="visual"/>
+                <geom mesh="wrist_2_link_1" pos="0 0.1215 -0.96656" material="Opaque(232,133,0)" class="visual"/>
+                <geom mesh="wrist_2_link_collision" pos="0 0.1215 -0.96656" class="collision"/>
+
+                <body name="wrist_3_link" pos="0 -0.06056 0.042">
+                  <inertial pos="4.15409e-09 -0.0185535 0.000352259" quat="0.707088 -0.00519777 0.00519777 0.707088" mass="0.192478" diaginertia="0.000169015 0.000104 0.000100985"/>
+                  <joint name="wrist_3_joint" pos="0 0 0" axis="0 -1 0" range="-3.04 3.04"/>
+                  <geom mesh="wrist_3_link_0" pos="0 0.18206 -1.00856" material="Opaque(229,234,237)" class="visual"/>
+                  <geom mesh="wrist_3_link_1" pos="0 0.18206 -1.00856" material="Opaque(63,63,63)" class="visual"/>
+                  <geom mesh="wrist_3_link_2" pos="0 0.18206 -1.00856" material="Opaque(63,63,63)" class="visual"/>
+                  <geom mesh="wrist_3_link_3" pos="0 0.18206 -1.00856" material="Opaque(63,63,63)" class="visual"/>
+                  <geom mesh="wrist_3_link_collision" pos="0 0.18206 -1.00856" class="collision"/>
+                  
+                  <body name="tool0_link" pos="0 -0.0335 0" quat="0.7071068 0.7071068 0 0">
+                    <site name="attachment_site" pos="0 0 0" quat="1 0 0 0"/>
+                    <site name="eef_site" pos="0 0 0.2" quat="0 -0.7071068 -0.7071068 0"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <contact>
+    <exclude body1="base_link" body2="shoulder_link"/>
+    <!-- <exclude body1="shoulder_link" body2="upper_arm_link"/>
+    <exclude body1="upper_arm_link" body2="forearm_link"/>
+    <exclude body1="forearm_link" body2="wrist_1_link"/>
+    <exclude body1="wrist_1_link" body2="wrist_2_link"/>
+    <exclude body1="wrist_2_link" body2="wrist_3_link"/> -->
+  </contact>
+</mujoco>

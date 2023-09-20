@@ -5,7 +5,7 @@
 <img src="images/ur5e.gif" alt="b_bot GIF" width="49%">
 </p>
 
-Manipulator-Mujoco is a template repository that simplifies the control of various robot arms in the Mujoco simulator using operational space controllers. It offers a Gymnasium base environment that can be tailored for reinforcement learning tasks. This repository is built with dm_control, providing effortless configuration for different Mujoco environments.
+Manipulator-Mujoco is a template repository that simplifies the setup and control of manipulators in Mujoco. It provides a generic operational space controller that can work with any robot arm. It offers a Gymnasium base environment that can be tailored for reinforcement learning tasks. This repository is built with dm_control, providing effortless configuration for different Mujoco environments.
 
 ## Supported Robots
 

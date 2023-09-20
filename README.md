@@ -82,6 +82,9 @@ self._arm = Arm(
 self._arena.attach(
     self._arm.mjcf_model, pos=[0, 0, 0], quat=[0.7071068, 0, 0, -0.7071068]
 )
+
+# generate model
+self._physics = mjcf.Physics.from_mjcf_model(self._arena.mjcf_model)
 ```
 
 Operational space control setup is designed to be straightforward:

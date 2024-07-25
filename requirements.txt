@@ -1,4 +1,4 @@
 mujoco
 dm-control
-numpy
+numpy<2.0.0
 gymnasium

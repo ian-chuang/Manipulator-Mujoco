@@ -32,6 +32,9 @@ class StandardArena(object):
             # TODO randomize lighting?
             self._mjcf_model.worldbody.add("light", pos=[x, -1, 3], dir=[-x, 1, -2])
 
+        self._mjcf_model.worldbody.add("camera", name="front_camera", pos=[1.966, 0., 0.532], xyaxes=[-0.002, 1.000, -0.000, -0.249, -0.000, 0.968])
+        # self._mjcf_model.worldbody.add("geom", type="sphere", size=[0.5], pos=[1.966, 0., 0.532])
+
     def attach(self, child, pos: list = [0, 0, 0], quat: list = [1, 0, 0, 0]) -> mjcf.Element:
         """
         Attaches a child element to the MJCF model at a specified position and orientation.

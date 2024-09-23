@@ -535,6 +535,34 @@ def axisangle2quat(vec):
     q[:3] = axis * np.sin(angle / 2.0)
     return q
 
+def euler2quat(euler):
+    """
+    Convert Euler angles to quaternion.
+    
+    Args:
+        euler (np.array): (roll, pitch, yaw) angles in radians
+
+    Returns:
+        np.array: (x, y, z, w) quaternion
+    """
+    roll, pitch, yaw = euler
+
+    # Calculate the sine and cosine for each half angle
+    cy = np.cos(yaw * 0.5)
+    sy = np.sin(yaw * 0.5)
+    cp = np.cos(pitch * 0.5)
+    sp = np.sin(pitch * 0.5)
+    cr = np.cos(roll * 0.5)
+    sr = np.sin(roll * 0.5)
+
+    # Calculate the quaternion
+    w = cr * cp * cy + sr * sp * sy
+    x = sr * cp * cy - cr * sp * sy
+    y = cr * sp * cy + sr * cp * sy
+    z = cr * cp * sy - sr * sp * cy
+
+    return np.array([x, y, z, w], dtype=np.float32)
+
 
 def pose_in_A_to_pose_in_B(pose_A, pose_A_in_B):
     """

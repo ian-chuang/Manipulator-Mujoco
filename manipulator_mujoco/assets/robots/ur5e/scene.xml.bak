@@ -1,6 +1,6 @@
 <mujoco model="ur5e scene">
 
-  <include file="robot.xml"/>
+  <include file="ur5e.xml"/>
 
   <statistic center="0.3 0 0.4" extent="0.8"/>
 

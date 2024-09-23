@@ -1,3 +1,10 @@
+# How to run the code
+
+```bash
+(venv) ➜  Manipulator-Mujoco git:(main) ✗ python demo/generate.py --seed 2
+(venv) ➜  Manipulator-Mujoco git:(main) ✗ mjpython demo/recreate_trajectory.py --seed 2
+```
+
 # Manipulator-Mujoco
 
 <p float="left">
@@ -61,6 +68,21 @@ python ur5e_demo.py
 ```
 
 In the demos, you can manipulate the arm by double-clicking and selecting the target red box mocap. Hold the Ctrl key and left-click and drag to rotate or Ctrl key and right-click and drag to translate. The arm will utilize operational space control to follow the target mocap.
+
+### Generate
+
+To run the demo for the generation, execute:
+
+```bash
+python generate.py
+```
+
+It will produce a `demo.pkl` file with a saved tajectory. To recreate the saved trajectory, execute:
+
+```bash
+python recreate_trajectory.py
+```
+
 
 ## Setting Up Your Own Environment
 

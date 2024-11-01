@@ -1,17 +1,17 @@
 import time
+import os
 import numpy as np
 from dm_control import mjcf
 import mujoco.viewer
 import gymnasium as gym
 from gymnasium import spaces
 from manipulator_mujoco.arenas import StandardArena
-from manipulator_mujoco.robots import AuboI5, AG95
-from manipulator_mujoco.props import Primitive
+from manipulator_mujoco.robots import Arm
 from manipulator_mujoco.mocaps import Target
 from manipulator_mujoco.controllers import OperationalSpaceController
+from manipulator_mujoco.utils.transform_utils import euler2quat, quat_multiply
 
-
-class AuboI5Env(gym.Env):
+class UR5eActionEnv(gym.Env):
 
     metadata = {
         "render_modes": ["human", "rgb_array"],
@@ -20,13 +20,14 @@ class AuboI5Env(gym.Env):
 
     def __init__(self, render_mode=None):
         # TODO come up with an observation space that makes sense
-        self.step_count = 0
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(6,), dtype=np.float64
         )
 
         # TODO come up with an action space that makes sense
-        self.action_space = spaces.Box(low=-0.1, high=0.1, shape=(6,), dtype=np.float64)
+        self.action_space = spaces.Box(
+            low=-0.1, high=0.1, shape=(6,), dtype=np.float64
+        )
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self._render_mode = render_mode
@@ -34,43 +35,44 @@ class AuboI5Env(gym.Env):
         ############################
         # create MJCF model
         ############################
-
+        
         # checkerboard floor
         self._arena = StandardArena()
 
         # mocap target that OSC will try to follow
         self._target = Target(self._arena.mjcf_model)
 
-        # aubo i5 arm
-        self._arm = AuboI5()
-
-        # ag95 gripper
-        self._gripper = AG95()
-
-        # attach gripper to arm
-        self._arm.attach_tool(
-            self._gripper.mjcf_model, pos=[0, 0, 0], quat=[0, 0, 0, 1]
+        # ur5e arm
+        self._arm = Arm(
+            xml_path= os.path.join(
+                os.path.dirname(__file__),
+                '../assets/robots/ur5e/ur5e.xml',
+            ),
+            eef_site_name='eef_site',
+            attachment_site_name='attachment_site'
         )
 
-        # small box to be manipulated
-        self._box = Primitive(
-            type="box",
-            size=[0.02, 0.02, 0.02],
-            pos=[0, 0, 0.02],
-            rgba=[1, 0, 0, 1],
-            friction=[1, 0.3, 0.0001],
-        )
         # attach arm to arena
-        self._arena.attach(self._arm.mjcf_model, pos=[0, 0, 0])
-
-        # attach box to arena as free joint
-        # TODO: set random position
-        self._random_box_pos = np.random.uniform(-0.2, 0.2, size=2)
-        self._random_box_pos[0] += 0.5
-        self._arena.attach_free(
-            self._box.mjcf_model,
-            pos=[self._random_box_pos[0], self._random_box_pos[1], 0],
+        self._arena.attach(
+            self._arm.mjcf_model, pos=[0,0,0], quat=[0.7071068, 0, 0, -0.7071068]
         )
+       
+        # Add front camera
+        # self._arena.mjcf_model.worldbody.add(
+        #     "camera",
+        #     name="front_camera",
+        #     pos=[0, -2, 1],  # Position in front of the robot
+        #     quat=[1, 0, 0, 0],  # Default orientation
+        #     mode="fixed"
+        # )
+
+        # # Add wrist camera (attached to the end-effector)
+        # self._arm.mjcf_model.worldbody.add(
+        #     "camera",
+        #     name="wrist_camera",
+        #     pos=[0, 0, 0],  # Position at the end-effector
+        #     mode="fixed"
+        # )
 
         # generate model
         self._physics = mjcf.Physics.from_mjcf_model(self._arena.mjcf_model)
@@ -82,9 +84,9 @@ class AuboI5Env(gym.Env):
             eef_site=self._arm.eef_site,
             min_effort=-150.0,
             max_effort=150.0,
-            kp=300,
-            ko=300,
-            kv=30,
+            kp=200,
+            ko=200,
+            kv=50,
             vmax_xyz=1.0,
             vmax_abg=2.0,
         )
@@ -95,9 +97,28 @@ class AuboI5Env(gym.Env):
         self._step_start = None
 
     def _get_obs(self) -> np.ndarray:
-        # TODO come up with an observations that makes sense for your RL task
+        """
+        Returns a dictionary containing images from the front camera and wrist camera.
+        """
+        # # Image size for the cameras
+        # width, height = 128, 128
 
-        return np.zeros(6)
+        # # Render the image from the front camera
+        # front_camera_image = self._physics.render(
+        #     width=width, height=height, camera_id=self._physics.model.name2id('front_camera', 'camera')
+        # )
+
+        # # # Render the image from the wrist camera
+        # # wrist_camera_image = self._physics.render(
+        # #     width=width, height=height, camera_id=self._physics.model.name2id('wrist_camera', 'camera')
+        # # )
+
+        # # Return images as a dictionary
+        # return {
+        #     "front_camera": front_camera_image,
+        #     # "wrist_camera": wrist_camera_image
+        # }
+        pass
 
     def _get_info(self) -> dict:
         # TODO come up with an info dict that makes sense for your RL task
@@ -105,27 +126,20 @@ class AuboI5Env(gym.Env):
 
     def reset(self, seed=None, options=None) -> tuple:
         super().reset(seed=seed)
-        self._random_box_pos = np.random.uniform(-0.2, 0.2, size=2)
-        self._random_box_pos[0] += 0.5
-        print(self._random_box_pos)
-        self._box.mjcf_model.remove()
-        # self._arena.attach_free(
-        #    self._box.mjcf_model,
-        #    pos=[self._random_box_pos[0], self._random_box_pos[1], 0],
-        # )
+
         # reset physics
         with self._physics.reset_context():
             # put arm in a reasonable starting position
-            self._physics.bind(self._arm.joints).qpos = [0, 0, 1.5707, 0, 1.5707, 0]
+            self._physics.bind(self._arm.joints).qpos = [
+                0.0,
+                -1.5707,
+                1.5707,
+                -1.5707,
+                -1.5707,
+                0.0,
+            ]
             # put target in a reasonable starting position
-            # self._target.set_mocap_pose(
-            #    self._physics, position=[0.5, 0.1, 0.04], quaternion=[0, 0, 0, 1]
-            # )
-            self._target.set_mocap_pose(
-                self._physics,
-                position=[self._random_box_pos[0], self._random_box_pos[1], 0.04],
-                quaternion=[0, 0, 0, 1],
-            )
+            self._target.set_mocap_pose(self._physics, position=[0.5, 0, 0.3], quaternion=[0, 0, 0, 1])
 
         observation = self._get_obs()
         info = self._get_info()
@@ -133,10 +147,18 @@ class AuboI5Env(gym.Env):
         return observation, info
 
     def step(self, action: np.ndarray) -> tuple:
-        # TODO use the action to control the arm
+        eef_pose = self._arm.get_eef_pose(self._physics)
+        eef_position = eef_pose[:3]
+        eef_quat = eef_pose[3:]
+
+        delta_position = action[:3]
+        delta_angles = action[3:6]
+
+        target_position = eef_position + delta_position
+        target_quat = quat_multiply(eef_quat, euler2quat(delta_angles))
 
         # get mocap target pose
-        target_pose = self._target.get_mocap_pose(self._physics)
+        target_pose = np.concatenate([target_position, target_quat])
 
         # run OSC controller to move to target pose
         self._controller.run(target_pose)
@@ -144,24 +166,16 @@ class AuboI5Env(gym.Env):
         # step physics
         self._physics.step()
 
+        print(self._arm.get_eef_pose(self._physics))
+
         # render frame
         if self._render_mode == "human":
             self._render_frame()
-
+        
         # TODO come up with a reward, termination function that makes sense for your RL task
         observation = self._get_obs()
         reward = 0
         terminated = False
-        if self.step_count == 1:
-            print(dir(self._gripper.mjcf_model.actuator))
-            import sys
-
-            sys.exit()
-
-        if self.step_count > 1000:
-            print("Terminated")
-            self.step_count = 0
-            terminated = True
         info = self._get_info()
 
         return observation, reward, terminated, False, info
@@ -180,7 +194,6 @@ class AuboI5Env(gym.Env):
         """
         Renders the current frame and updates the viewer if the render mode is set to "human".
         """
-        self.step_count += 1
         if self._viewer is None and self._render_mode == "human":
             # launch viewer
             self._viewer = mujoco.viewer.launch_passive(

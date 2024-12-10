@@ -19,10 +19,14 @@
         <geom group="3" type="mesh" density="2700"/>
 
         <default class="pad_box_0">
-          <geom friction="1.5 0.1 0.0002" solimp="0.95 0.99 0.001" solref="0.001 1" priority="1" rgba="0.45 0.45 0.45 1"/>
+          <geom  solimp="0.95 0.99 0.001" solref="0.004 1" priority="1" rgba="0.45 0.45 0.45 1"/>
         </default>
         <default class="pad_box_1">
-          <geom friction="1.5 0.1 0.0002" solimp="0.95 0.99 0.001" solref="0.001 1" priority="1" rgba="0.55 0.55 0.55 1"/>
+          <geom  solimp="0.95 0.99 0.001" solref="0.004 1" priority="1" rgba="0.55 0.55 0.55 1"/>
+        </default>
+
+        <default class="sphere_collision">
+          <geom type="sphere" size="0.0006" rgba="1 0 0 1" group="3" solimp="0.95 0.99 0.001" solref="0.004 1" priority="1" mass="1e-6"/>
         </default>
         
       </default>
@@ -73,6 +77,14 @@
             <geom class="visual" pos="-0.091673 0.00875 -0.098336" mesh="finger_pad_0" material="grey"/>
             <geom class="pad_box_1" pos="-0.091673 0.00875 -0.098336" mesh="finger_pad_1"/>
             <geom class="visual" pos="-0.091673 0.00875 -0.098336" mesh="finger_pad_1" material="grey"/>
+
+            <geom pos="-0.028 0 0.02" class="sphere_collision"/>
+            <geom pos="-0.028 0.0175 0.02" class="sphere_collision"/>
+            <geom pos="-0.028 0 0.032" class="sphere_collision"/>
+            <geom pos="-0.028 0.0175 0.032" class="sphere_collision"/>
+            <geom pos="-0.028 0 0.044" class="sphere_collision"/>
+            <geom pos="-0.028 0.0175 0.044" class="sphere_collision"/>
+
           </body>
         </body>
         <body name="right_inner_knuckle" pos="-0.016 0.0254 0.10586" quat="0 0.385173 0 -0.922844">
@@ -96,6 +108,13 @@
             <geom class="visual" pos="-0.091673 0.00875 -0.098336" mesh="finger_pad_0" material="grey"/>
             <geom class="pad_box_1" pos="-0.091673 0.00875 -0.098336" mesh="finger_pad_1"/>
             <geom class="visual" pos="-0.091673 0.00875 -0.098336" mesh="finger_pad_1" material="grey"/>
+
+            <geom pos="-0.028 0 0.02" class="sphere_collision"/>
+            <geom pos="-0.028 0.0175 0.02" class="sphere_collision"/>
+            <geom pos="-0.028 0 0.032" class="sphere_collision"/>
+            <geom pos="-0.028 0.0175 0.032" class="sphere_collision"/>
+            <geom pos="-0.028 0 0.044" class="sphere_collision"/>
+            <geom pos="-0.028 0.0175 0.044" class="sphere_collision"/>
 
           </body>
         </body>
